@@ -62,7 +62,7 @@ model = FastLanguageModel.get_peft_model(
 # =================================================================
 # 3. データセット
 # =================================================================
-dataset_file = "clean_orpo.jsonl" 
+dataset_file = "clean_orpo_sanitized.jsonl" 
 dataset = load_dataset("json", data_files=dataset_file, split="train")
 
 def filter_bad_rows(example):
