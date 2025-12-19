@@ -103,7 +103,7 @@ orpo_config = ORPOConfig(
     output_dir = output_dir,
     remove_unused_columns = False,
     
-    per_device_train_batch_size = 2,
+    per_device_train_batch_size = 1,
     gradient_accumulation_steps = 8,
 
     # --- Lion設定 ---
