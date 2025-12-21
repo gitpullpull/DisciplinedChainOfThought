@@ -438,7 +438,7 @@ def main():
     parser.add_argument("--use_Introspective_Temperature", "-ui", action='store_true', help="Use Introspective_Temperature control tags.")
 
     # チャンクサイズ（デフォルト1000）
-    parser.add_argument("--chunk_size", type=int, default=1000, help="Save and upload every N samples.")
+    parser.add_argument("--chunk_size", type=int, default=100, help="Save and upload every N samples.")
 
     args = parser.parse_args()
     
