@@ -1,9 +1,9 @@
 #!/bin/bash
 
 # 1. ライブラリのインストール
-echo "--- Installing python libraries ---"
+echo "--- Installing python libraries for unsloth docker---"
 pip install pandas matplotlib huggingface_hub
-pip install https://github.com/Dao-AILab/flash-attention/releases/tag/v2.8.3/flash_attn-2.8.3+cu12torch2.8cxx11abiTRUE-cp311-cp311-linux_x86_64.whl
+pip install https://github.com/Dao-AILab/flash-attention/releases/download/v2.8.3/flash_attn-2.8.3+cu12torch2.8cxx11abiTRUE-cp311-cp311-linux_x86_64.whl
 
 apt-get install git-lfs -y
 git lfs install
