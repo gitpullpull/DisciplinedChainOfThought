@@ -76,10 +76,15 @@ def filter_bad_rows(example):
 
 dataset = dataset.filter(filter_bad_rows)
 
+system_instruction = """You allow dynamic control of generation temperature. Always use <TEMP_LOW>, <TEMP_MID>, or <TEMP_HIGH> tags to indicate your thought process and response style."""
+
 def format_orpo_data(example):
     row = example.get("data", example)
     formatted_prompt = tokenizer.apply_chat_template(
-        [{"role": "user", "content": row["user_prompt"]}],
+        [
+            {"role": "system", "content": system_instruction},
+            {"role": "user", "content": row["user_prompt"]}
+        ],
         tokenize=False,
         add_generation_prompt=True
     )
