@@ -244,12 +244,16 @@ def format_cot_example(example, including_answer=True):
     return prompt
 
 def create_prompt_text(curr, val_df, k, use_custom_prompt=False):
-    """プロンプト作成"""
+    """プロンプト作成 (System Prompt分離版)"""
+    messages = []
+
+    # 1. System Promptの追加 (カスタムプロンプト有効時のみ)
     if use_custom_prompt:
-        prompt = "You can control the output style using <TEMP_LOW>, <TEMP_MID>, or <TEMP_HIGH> tags.\n\n"
-        prompt += "The following are multiple choice questions (with answers) about {}.\n\n".format(curr["category"].replace("_", " "))
-    else:
-        prompt = "The following are multiple choice questions (with answers) about {}.\n\n".format(curr["category"].replace("_", " "))
+        system_content = "You allow dynamic control of generation temperature. Always use <TEMP_LOW>, <TEMP_MID>, or <TEMP_HIGH> tags to indicate your thought process and response style.\n\n"
+        messages.append({"role": "system", "content": system_content})
+
+    # 2. User Promptの作成 (問題文やFew-shotはこちらに残す)
+    user_content = "The following are multiple choice questions (with answers) about {}.\n\n".format(curr["category"].replace("_", " "))
     
     # Few-shot examples
     if k > 0:
@@ -257,14 +261,14 @@ def create_prompt_text(curr, val_df, k, use_custom_prompt=False):
         relevant_examples = [x for x in val_df if x["category"] == subject]
         shots = relevant_examples[:k]
         for example in shots:
-            prompt += format_cot_example(example, including_answer=True)
+            user_content += format_cot_example(example, including_answer=True)
     
     # Target Question
-    prompt += format_cot_example(curr, including_answer=False)
+    user_content += format_cot_example(curr, including_answer=False)
     
-    messages = [
-        {"role": "user", "content": prompt}
-    ]
+    # Userメッセージを追加
+    messages.append({"role": "user", "content": user_content})
+    
     return messages
 
 def custom_collate_fn(batch):
@@ -342,8 +346,8 @@ def eval_mmlu_pro(model, tokenizer, test_data, val_data, args):
     # 温度マップの設定
     if args.use_Introspective_Temperature:
         TEMP_MAP = {
-            "<TEMP_LOW>": 0.4,
-            "<TEMPERATURE_LOW>": 0.4,
+            "<TEMP_LOW>": 0.3,
+            "<TEMPERATURE_LOW>": 0.3,
             "<TEMP_MID>": 0.6,
             "<TEMPERATURE_MID>": 0.6,
             "<TEMP_HIGH>": 0.8,
