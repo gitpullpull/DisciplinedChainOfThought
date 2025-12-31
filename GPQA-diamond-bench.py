@@ -238,7 +238,7 @@ def format_item(item, tokenizer, use_custom_prompt=False):
         q_text = item["Question"]
         correct_answer = item["Correct Answer"]
         incorrect_answers = [item[f"Incorrect Answer {i}"] for i in range(1, 4) 
-                            if item.get(f"Incorrect Answer {i}")]
+                             if item.get(f"Incorrect Answer {i}")]
 
         choices = [correct_answer] + incorrect_answers
         random.shuffle(choices)
@@ -263,10 +263,10 @@ def format_item(item, tokenizer, use_custom_prompt=False):
     else:
         return None
 
-    # システムプロンプト（動的温度タグ付き）
+    # You allow dynamic control of generation temperature. Always use <TEMP_LOW>, <TEMP_MID>, or <TEMP_HIGH> tags to indicate your thought process and response style.\n\n
     if use_custom_prompt:
         system_prompt = (
-            "You allow dynamic control of generation temperature. Always use <TEMP_LOW>, <TEMP_MID>, or <TEMP_HIGH> tags to indicate your thought process and response style.\n\n"
+            "You can control the output style using <TEMP_LOW>, <TEMP_MID>, or <TEMP_HIGH> tags.\n\n"
             "Answer the following multiple choice question. "
             "The last line of your response should be of the following format: 'Answer: $LETTER' (without quotes) where LETTER is one of ABCD. "
             "Think step by step before answering."
@@ -386,8 +386,8 @@ def eval_gpqa(model, tokenizer, dataset, args):
             "<TEMPERATURE_LOW>": 0.3,
             "<TEMP_MID>": 0.6,
             "<TEMPERATURE_MID>": 0.6,
-            "<TEMP_HIGH>": 1.0,
-            "<TEMPERATURE_HIGH>": 1.0,
+            "<TEMP_HIGH>": 0.8,
+            "<TEMPERATURE_HIGH>": 0.8,
         }
     else:
         TEMP_MAP = {}
@@ -434,6 +434,9 @@ def eval_gpqa(model, tokenizer, dataset, args):
             thinking_content, final_content = parse_thinking_response(response)
             predicted = extract_answer(response)
             
+            # トークン数の計算 (パディングを除外)
+            token_count = (generated_ids[i] != tokenizer.pad_token_id).sum().item()
+            
             gt = ground_truths[i]
             is_correct = (predicted == gt)
             
@@ -442,11 +445,11 @@ def eval_gpqa(model, tokenizer, dataset, args):
             total_count += 1
             
             all_results.append({
-                "question": questions_raw[i][:100],
+                "question": questions_raw[i],
                 "predicted": predicted,
                 "ground_truth": gt,
                 "correct": is_correct,
-                "thinking_length": len(thinking_content),
+                "response_length": token_count, # thinking_lengthから変更
                 "output_sample": response  # サンプルのみ保存
             })
 
@@ -458,21 +461,21 @@ def eval_gpqa(model, tokenizer, dataset, args):
 def main():
     parser = argparse.ArgumentParser(description="GPQA Evaluation with Manual Generation")
     parser.add_argument("--model", "-m", type=str, default="unsloth/Qwen3-8B",
-                       help="Base model path")
-    parser.add_argument("--lora_path", "-lp", type=str, nargs='?', const="./Introspective_Temperature_test/run_20251219_040313", default=None,
-                       help="LoRA adapter path")
+                        help="Base model path")
+    parser.add_argument("--lora_path", "-lp", type=str, nargs='?', const="./Introspective_Temperature_test/run_20251224_170022", default=None,
+                        help="LoRA adapter path")
     parser.add_argument("--save_dir", "-s", type=str, default="./benchmark_results",
-                       help="Results save directory")
+                        help="Results save directory")
     parser.add_argument("--batch_size", "-bs", type=int, default=3,
-                       help="Batch size for inference")
+                        help="Batch size for inference")
     parser.add_argument("--num_samples", "-ns", type=int, default=-1,
-                       help="Number of random samples to evaluate.")
+                        help="Number of random samples to evaluate.")
     parser.add_argument("--use_custom_prompt", "-up", action='store_true',
-                       help="Use custom prompt with temperature control tags.")
+                        help="Use custom prompt with temperature control tags.")
     parser.add_argument("--use_Introspective_Temperature", "-ui", action='store_true',
-                       help="Use Introspective_Temperature control tags.")
+                        help="Use Introspective_Temperature control tags.")
     parser.add_argument("--seed", "-sd", type=int, default=42, 
-                       help="Random seed for reproducibility")
+                        help="Random seed for reproducibility")
 
     args = parser.parse_args()
     
