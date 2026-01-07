@@ -9,6 +9,7 @@ import time
 import re
 import logging
 import sys
+import gc
 from tqdm import tqdm
 from datasets import load_dataset
 from torch.utils.data import DataLoader
@@ -567,6 +568,21 @@ def main():
                 print(f"Uploaded to HF: {upload_repo_id}/{path_in_repo}")
             except Exception as e:
                 print(f"Failed to upload to Hugging Face: {e}")
+
+        # === メモリ解放処理を追加 ===
+        print(f"Cleaning up memory after chunk {current_start}-{current_end}...")
+        
+        # 1. 大きな変数を明示的に削除 (参照を切る)
+        del results
+        del chunk_data
+        del output_data
+        
+        # 2. Pythonのガベージコレクションを強制実行
+        gc.collect()
+        
+        # 3. PyTorchのVRAMキャッシュをクリア (断片化解消に寄与)
+        torch.cuda.empty_cache()
+        # ========================================
         
         # 次のチャンクへ
         current_start += chunk_size
