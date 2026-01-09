@@ -394,7 +394,7 @@ def eval_mmlu_pro(model, tokenizer, test_data, val_data, args):
         for i, response in enumerate(responses):
             item = original_items[i]
             category = item["category"]
-            question_id = item["question"][:50]
+            question_id = item["question"]
             gt = item["answer"]
             
             # トークン数カウント (パディングを除く)
