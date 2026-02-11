@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>D-CoT 概念図</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;600;700&display=swap');
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Noto Sans JP', sans-serif;
+    background: #f0f0ec;
+    padding: 2rem;
+    color: #1a1a1a;
+  }
+  .note {
+    font-size: 0.68rem;
+    color: #999;
+    margin-bottom: 1rem;
+    line-height: 1.4;
+    border-left: 3px solid #ddd;
+    padding-left: 0.6rem;
+  }
+  .frame {
+    background: #fff;
+    border: 1px solid #bbb;
+    display: inline-block;
+  }
+  svg text { font-family: 'Noto Sans JP', sans-serif; }
+  svg .mono { font-family: 'Courier New', monospace; }
+  svg .eng { font-family: 'Courier New', monospace; font-style: italic; }
+</style>
+</head>
+<body>
+
+<p class="note">MMLU-Pro #238（手形割引問題）</p>
+
+<div class="frame">
+<svg viewBox="0 0 460 198" width="575" height="248" xmlns="http://www.w3.org/2000/svg">
+
+  <!-- ================================ -->
+  <!--  左: 従来の蒸留CoT (base-noprompt) -->
+  <!-- ================================ -->
+  <rect x="4" y="4" width="222" height="174" rx="3" fill="#fff" stroke="#C8C8C8" stroke-width="0.7"/>
+
+  <!-- ヘッダ -->
+  <rect x="4" y="4" width="222" height="14" rx="3" fill="#F5F5F5" stroke="#C8C8C8" stroke-width="0.7"/>
+  <rect x="4" y="11" width="222" height="7" fill="#F5F5F5"/>
+  <text x="115" y="14" text-anchor="middle" font-size="6.5" font-weight="600" fill="#555">(a) 従来の蒸留CoT</text>
+
+  <!-- Block 1: いきなり計算着手 y=22 h=12 -->
+  <rect x="11" y="22" width="208" height="12" rx="1.5" fill="#FFF7ED" stroke="#FDBA74" stroke-width="0.4"/>
+  <text x="16" y="30" font-size="5.2" class="eng" fill="#92400E">Okay, let's see... The interest is calculated for that period...</text>
+
+  <!-- Block 2: Wait, but... y=37 h=12 -->
+  <rect x="11" y="37" width="208" height="12" rx="1.5" fill="#FEF2F2" stroke="#FCA5A5" stroke-width="0.4"/>
+  <text x="16" y="45" font-size="5.2" class="eng" fill="#7F1D1D">Wait, but when you discount a note... Wait, but maybe...</text>
+
+  <!-- Block 3: 不要な筆算 y=52 h=20 -->
+  <rect x="11" y="52" width="208" height="20" rx="1.5" fill="#FFF7ED" stroke="#FDBA74" stroke-width="0.4"/>
+  <text x="16" y="60" font-size="5.2" class="eng" fill="#92400E">831.81 / 160 = (831.81/16) / 10. ≈ 51.988...</text>
+  <text x="16" y="69" font-size="5" fill="#B45309" font-style="italic">LLMに本来不要な筆算の模倣により無駄にトークンを消費している</text>
+
+  <!-- Block 4: ★正解到達 y=76 h=12 -->
+  <rect x="11" y="76" width="208" height="12" rx="1.5" fill="#F0FDF4" stroke="#22C55E" stroke-width="0.7"/>
+  <text x="16" y="84" font-size="5.3" class="eng" font-weight="600" fill="#166534">$817.25, which is option E. 正解に到達</text>
+
+  <!-- ★★★ Tragic Restart y=94 h=26 ★★★ -->
+  <rect x="11" y="94" width="208" height="26" rx="1.5" fill="#FEF2F2" stroke="#DC2626" stroke-width="0.7"/>
+  <text x="16" y="103" font-size="5.2" class="eng" fill="#7F1D1D">Wait, but let me check my calculations again</text>
+  <text x="16" y="111" font-size="5.2" class="eng" fill="#7F1D1D">because I approximated some steps...</text>
+  <text x="16" y="119" font-size="5" fill="#B91C1C" font-style="italic">正解後に疑念を抱き不要な再計算を開始している</text>
+
+  <!-- Block 5: 再計算→トークン切れ y=124 h=12 -->
+  <rect x="11" y="124" width="208" height="12" rx="1.5" fill="#F9FAFB" stroke="#D1D5DB" stroke-width="0.3" stroke-dasharray="2,1"/>
+  <text x="16" y="132" font-size="5.2" class="eng" fill="#9CA3AF">First, the maturity value is $815.50 * (1 + 0.06 * 4/12)...</text>
+
+  <!-- トークン切れ y=145 -->
+  <text x="115" y="145" text-anchor="middle" font-size="4.5" fill="#9CA3AF">── max_new_token (2048) に到達 ──</text>
+
+  <!-- 結果 y=150 h=12 -->
+  <rect x="11" y="150" width="208" height="12" rx="1.5" fill="#FEF2F2" stroke="#DC2626" stroke-width="0.5"/>
+  <text x="115" y="158" text-anchor="middle" font-size="5.3" font-weight="500" fill="#991B1B">predicted: "I" 不正解（正解到達後に自滅）</text>
+
+  <!-- ラベル y=172 -->
+  <text x="115" y="172" text-anchor="middle" font-size="6.5" font-weight="600" fill="#991B1B">過剰思考（Overthinking）</text>
+
+
+  <!-- ================================ -->
+  <!--  右: D-CoT (lora-use-prompt)     -->
+  <!-- ================================ -->
+  <rect x="234" y="4" width="222" height="174" rx="3" fill="#fff" stroke="#C8C8C8" stroke-width="0.7"/>
+
+  <!-- ヘッダ -->
+  <rect x="234" y="4" width="222" height="14" rx="3" fill="#F0FDF4" stroke="#BBF7D0" stroke-width="0.7"/>
+  <rect x="234" y="11" width="222" height="7" fill="#F0FDF4"/>
+  <text x="345" y="14" text-anchor="middle" font-size="6.5" font-weight="600" fill="#166534">(b) D-CoT</text>
+
+  <!-- Layer 1: TEMP_LOW y=22 h=44 -->
+  <rect x="241" y="22" width="208" height="44" rx="2" fill="#EFF6FF" stroke="#93C5FD" stroke-width="0.5"/>
+  <rect x="241" y="22" width="3.5" height="44" rx="1" fill="#2563EB"/>
+  <text x="252" y="31" font-size="5.3" font-weight="600" class="mono" fill="#1D4ED8">&lt;TEMP_LOW&gt;</text>
+  <text x="304" y="31" font-size="5.5" font-weight="500" fill="#1D4ED8">事実整理</text>
+  <text x="252" y="41" font-size="5.2" class="eng" fill="#334155">Mrs. Reeves has a 4-month note issued</text>
+  <text x="252" y="49" font-size="5.2" class="eng" fill="#334155">on December 10, so it matures on April 10.</text>
+  <text x="252" y="59" font-size="5.2" class="eng" fill="#334155">She discounts it on January 10, which is</text>
+  <text x="252" y="64" font-size="5.2" class="eng" font-weight="600" fill="#1E40AF">3 months before maturity.</text>
+
+  <!-- 矢印（三角のみ） -->
+  <polygon points="343,68 345,71 347,68" fill="#94A3B8"/>
+
+  <!-- Layer 2: TEMP_HIGH y=73 h=38 -->
+  <rect x="241" y="73" width="208" height="38" rx="2" fill="#FFF7ED" stroke="#FDBA74" stroke-width="0.5"/>
+  <rect x="241" y="73" width="3.5" height="38" rx="1" fill="#EA580C"/>
+  <text x="252" y="82" font-size="5.3" font-weight="600" class="mono" fill="#C2410C">&lt;TEMP_HIGH&gt;</text>
+  <text x="308" y="82" font-size="5.5" font-weight="500" fill="#C2410C">多角的探索</text>
+  <text x="252" y="92" font-size="5.2" class="eng" fill="#334155">most people might assume 1 month,</text>
+  <text x="252" y="100" font-size="5.2" class="eng" fill="#334155">but it's actually 3 months. That's a key detail.</text>
+  <text x="252" y="108" font-size="4.8" fill="#64748B" font-style="italic">問題文のひっかけを多角的視点で回避出来ている</text>
+
+  <!-- 矢印（三角のみ） -->
+  <polygon points="343,113 345,116 347,113" fill="#94A3B8"/>
+
+  <!-- Layer 3: TEMP_MID y=118 h=26 -->
+  <rect x="241" y="118" width="208" height="26" rx="2" fill="#F0FDF4" stroke="#86EFAC" stroke-width="0.5"/>
+  <rect x="241" y="118" width="3.5" height="26" rx="1" fill="#16A34A"/>
+  <text x="252" y="127" font-size="5.3" font-weight="600" class="mono" fill="#15803D">&lt;TEMP_MID&gt;</text>
+  <text x="304" y="127" font-size="5.5" font-weight="500" fill="#15803D">論理的収束</text>
+  <text x="252" y="137" font-size="5.2" class="eng" fill="#334155">The correct answer is $817.26, closest to E. $817.25</text>
+
+  <!-- 結果 y=150 h=12 -->
+  <rect x="241" y="150" width="208" height="12" rx="1.5" fill="#F0FDF4" stroke="#16A34A" stroke-width="0.5"/>
+  <text x="345" y="158" text-anchor="middle" font-size="5.3" font-weight="500" fill="#166534">predicted: "E" 正解</text>
+
+  <!-- ラベル y=172 -->
+  <text x="345" y="172" text-anchor="middle" font-size="6.5" font-weight="600" fill="#166534">規律ある推論（D-CoT）</text>
+
+
+  <!-- ===== キャプション ===== -->
+  <text x="230" y="193" text-anchor="middle" font-size="6" fill="#555">図1: 従来の蒸留CoT (a) と D-CoT (b) における推論過程の比較（MMLU-Pro #238）</text>
+
+</svg>
+</div>
+
+</body>
+</html>
