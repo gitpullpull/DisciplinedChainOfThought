@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>D-CoT Figure 1 — Three-way Comparison</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #ffffff; padding: 2rem; font-family: 'Georgia', serif; }
+  svg .mono  { font-family: 'Courier New', Courier, monospace; }
+  svg .it    { font-style: italic; }
+  svg .bold  { font-weight: bold; }
+</style>
+</head>
+<body>
+<svg viewBox="0 0 900 368" width="1125" height="460" xmlns="http://www.w3.org/2000/svg">
+
+  <!-- ══════════════════════════════════════════════
+       (a) Conventional Distilled CoT — Overthinking
+       ══════════════════════════════════════════════ -->
+  <rect x="4" y="4" width="280" height="322" rx="4" fill="#fff" stroke="#C0C0C0" stroke-width="0.9"/>
+  <!-- header -->
+  <rect x="4" y="4" width="280" height="20" rx="4" fill="#F4F4F4" stroke="#C0C0C0" stroke-width="0.9"/>
+  <rect x="4" y="16" width="280" height="8" fill="#F4F4F4"/>
+  <text x="144" y="18" text-anchor="middle" font-size="8.5" font-weight="bold" fill="#444">(a) Conventional Distilled CoT</text>
+
+  <!-- blk1: jumps in -->
+  <rect x="12" y="32" width="264" height="20" rx="2" fill="#FFF7ED" stroke="#FDBA74" stroke-width="0.5"/>
+  <text x="18" y="42" font-size="7" class="mono" fill="#92400E">Okay, let's see... The interest is calculated</text>
+  <text x="18" y="50" font-size="7" class="mono" fill="#92400E">for that period...</text>
+
+  <!-- blk2: wait×3 -->
+  <rect x="12" y="56" width="264" height="28" rx="2" fill="#FEF2F2" stroke="#FCA5A5" stroke-width="0.5"/>
+  <text x="18" y="65" font-size="7" class="mono" fill="#7F1D1D">Wait, but when you discount a note...</text>
+  <text x="18" y="73" font-size="7" class="mono" fill="#7F1D1D">Wait, but maybe the discount is calculated...</text>
+  <text x="18" y="81" font-size="7" class="it" fill="#B91C1C">Oscillates without making progress</text>
+
+  <!-- blk3: manual arithmetic -->
+  <rect x="12" y="88" width="264" height="38" rx="2" fill="#FFF7ED" stroke="#FDBA74" stroke-width="0.5"/>
+  <text x="18" y="98" font-size="7" class="mono" fill="#92400E">831.81 / 160 = (831.81/16) / 10 ≈ 51.988...</text>
+  <text x="18" y="107" font-size="7" class="mono" fill="#92400E">Wait, 0.00625 is 1/160?</text>
+  <text x="18" y="116" font-size="7" class="mono" fill="#92400E">Dividing 831.81 by 160...</text>
+  <text x="18" y="123" font-size="6.5" class="it" fill="#B45309">Mimics human manual arithmetic — wastes tokens</text>
+
+  <!-- blk4: correct answer reached ★ -->
+  <rect x="12" y="130" width="264" height="18" rx="2" fill="#F0FDF4" stroke="#22C55E" stroke-width="0.9"/>
+  <text x="18" y="141" font-size="7.5" class="mono bold" fill="#166534">$817.25, which is option E.  ← Correct</text>
+
+  <!-- blk5: tragic restart -->
+  <rect x="12" y="152" width="264" height="38" rx="2" fill="#FFF0F0" stroke="#DC2626" stroke-width="0.9"/>
+  <text x="20" y="163" font-size="9" fill="#DC2626">⚠</text>
+  <text x="32" y="163" font-size="7" class="mono" fill="#7F1D1D">Wait, but let me check my calculations</text>
+  <text x="32" y="171" font-size="7" class="mono" fill="#7F1D1D">again because I approximated some steps...</text>
+  <text x="18" y="180" font-size="6.5" class="it" fill="#B91C1C">Re-computation triggered despite reaching correct answer</text>
+  <text x="18" y="187" font-size="6.5" class="it" fill="#B91C1C">Confidence ↓  /  Stopping criteria broken</text>
+
+  <!-- blk6: re-calc fades -->
+  <rect x="12" y="194" width="264" height="16" rx="2" fill="#F9FAFB" stroke="#D1D5DB" stroke-width="0.4" stroke-dasharray="3,2"/>
+  <text x="18" y="205" font-size="7" class="mono" fill="#9CA3AF">First, the maturity value is $815.50 * (1 + 0.06 ...</text>
+
+  <!-- token limit line -->
+  <line x1="40" y1="218" x2="236" y2="218" stroke="#E5E7EB" stroke-width="0.7" stroke-dasharray="2,2"/>
+  <text x="144" y="216" text-anchor="middle" font-size="6" fill="#9CA3AF">── max_new_tokens (2048) reached ──</text>
+
+  <!-- result: wrong -->
+  <rect x="12" y="224" width="264" height="16" rx="2" fill="#FEF2F2" stroke="#DC2626" stroke-width="0.7"/>
+  <text x="144" y="235" text-anchor="middle" font-size="7.5" font-weight="bold" fill="#991B1B">Prediction: "I"  ✗  (self-defeat)</text>
+
+  <!-- bottom label -->
+  <rect x="12" y="248" width="264" height="14" rx="2" fill="#FEF2F2"/>
+  <text x="144" y="258" text-anchor="middle" font-size="8" font-weight="bold" fill="#991B1B">Overthinking</text>
+
+  <!-- token count note -->
+  <text x="144" y="278" text-anchor="middle" font-size="6.5" fill="#888">Output: ~2,048 tokens (truncated)</text>
+
+
+  <!-- ══════════════════════════════════════════════
+       (b) D-CoT  lora-use-prompt  (explicit tags)
+       ══════════════════════════════════════════════ -->
+  <rect x="310" y="4" width="280" height="322" rx="4" fill="#fff" stroke="#C0C0C0" stroke-width="0.9"/>
+  <!-- header -->
+  <rect x="310" y="4" width="280" height="20" rx="4" fill="#F0FDF4" stroke="#BBF7D0" stroke-width="0.9"/>
+  <rect x="310" y="16" width="280" height="8" fill="#F0FDF4"/>
+  <text x="450" y="18" text-anchor="middle" font-size="8.5" font-weight="bold" fill="#166534">(b) D-CoT  (explicit tags)</text>
+
+  <!-- TEMP_LOW 1 -->
+  <rect x="318" y="32" width="264" height="56" rx="2" fill="#EFF6FF" stroke="#93C5FD" stroke-width="0.6"/>
+  <rect x="318" y="32" width="4"   height="56" rx="1.5" fill="#2563EB"/>
+  <text x="330" y="43" font-size="7.5" class="mono bold" fill="#1D4ED8">&lt;TEMP_LOW&gt;  Fact Organization</text>
+  <text x="330" y="53" font-size="7"   class="mono" fill="#1E3A5F">Note issued Dec 10 → matures April 10 (4 months)</text>
+  <text x="330" y="62" font-size="7"   class="mono" fill="#1E3A5F">Discounted on Jan 10 →</text>
+  <text x="330" y="71" font-size="7.5" class="mono bold" fill="#1D4ED8">  3 months remain until maturity</text>
+  <text x="330" y="84" font-size="6.5" class="it" fill="#3B82F6">Discount based on maturity value, not face value</text>
+
+  <!-- arrow -->
+  <polygon points="448,91 450,95 452,91" fill="#94A3B8"/>
+
+  <!-- TEMP_MID 1 -->
+  <rect x="318" y="98" width="264" height="44" rx="2" fill="#F5F3FF" stroke="#C4B5FD" stroke-width="0.6"/>
+  <rect x="318" y="98" width="4"   height="44" rx="1.5" fill="#7C3AED"/>
+  <text x="330" y="109" font-size="7.5" class="mono bold" fill="#5B21B6">&lt;TEMP_MID&gt;  Maturity Value</text>
+  <text x="330" y="119" font-size="7"   class="mono" fill="#2D1B69">$815.50 × 0.06 × (4/12) = $16.31</text>
+  <text x="330" y="128" font-size="7"   class="mono" fill="#2D1B69">Maturity value = $815.50 + $16.31 = $831.81</text>
+  <text x="330" y="138" font-size="6.5" class="it" fill="#6D28D9">Algorithmic step — no hesitation</text>
+
+  <!-- arrow -->
+  <polygon points="448,145 450,149 452,145" fill="#94A3B8"/>
+
+  <!-- TEMP_HIGH -->
+  <rect x="318" y="152" width="264" height="52" rx="2" fill="#FFF7ED" stroke="#FDBA74" stroke-width="0.6"/>
+  <rect x="318" y="152" width="4"   height="52" rx="1.5" fill="#EA580C"/>
+  <text x="330" y="163" font-size="7.5" class="mono bold" fill="#C2410C">&lt;TEMP_HIGH&gt;  Multi-perspective Exploration</text>
+  <text x="330" y="173" font-size="7"   class="mono" fill="#431407">Most people might assume 1 month,</text>
+  <text x="330" y="182" font-size="7"   class="mono" fill="#431407">but it's actually 3 months. That's a key detail.</text>
+  <text x="330" y="191" font-size="7"   class="mono" fill="#431407">Discount = $831.81 × 0.065 × (3/12) = $13.51</text>
+  <text x="330" y="200" font-size="6.5" class="it" fill="#92400E">Trap avoided via careful temporal reasoning</text>
+
+  <!-- arrow -->
+  <polygon points="448,206 450,210 452,206" fill="#94A3B8"/>
+
+  <!-- TEMP_LOW 2 -->
+  <rect x="318" y="213" width="264" height="36" rx="2" fill="#EFF6FF" stroke="#93C5FD" stroke-width="0.6"/>
+  <rect x="318" y="213" width="4"   height="36" rx="1.5" fill="#2563EB"/>
+  <text x="330" y="224" font-size="7.5" class="mono bold" fill="#1D4ED8">&lt;TEMP_LOW&gt;  Net Proceeds</text>
+  <text x="330" y="233" font-size="7"   class="mono" fill="#1E3A5F">Fee = $831.81 × 0.00125 = $1.04</text>
+  <text x="330" y="242" font-size="7"   class="mono" fill="#1E3A5F">$831.81 − $13.51 − $1.04 = <tspan font-weight="bold">$817.26</tspan></text>
+
+  <!-- result -->
+  <rect x="318" y="255" width="264" height="16" rx="2" fill="#F0FDF4" stroke="#16A34A" stroke-width="0.7"/>
+  <text x="450" y="266" text-anchor="middle" font-size="7.5" font-weight="bold" fill="#166534">Prediction: "E"  ✓</text>
+
+  <!-- bottom label -->
+  <rect x="318" y="278" width="264" height="14" rx="2" fill="#F0FDF4"/>
+  <text x="450" y="288" text-anchor="middle" font-size="8" font-weight="bold" fill="#166534">D-CoT  (Explicit)</text>
+  <text x="450" y="302" text-anchor="middle" font-size="6.5" fill="#888">Output: ~650 tokens</text>
+
+
+  <!-- ══════════════════════════════════════════════
+       (c) D-CoT  lora-no-prompt  (internalized)
+       ══════════════════════════════════════════════ -->
+  <rect x="616" y="4" width="280" height="322" rx="4" fill="#fff" stroke="#C0C0C0" stroke-width="0.9"/>
+  <!-- header -->
+  <rect x="616" y="4" width="280" height="20" rx="4" fill="#ECFDF5" stroke="#6EE7B7" stroke-width="0.9"/>
+  <rect x="616" y="16" width="280" height="8" fill="#ECFDF5"/>
+  <text x="756" y="18" text-anchor="middle" font-size="8.5" font-weight="bold" fill="#065F46">(c) D-CoT  (internalized — no tags)</text>
+
+  <!-- blk1: structured fact org (no tag) -->
+  <rect x="624" y="32" width="264" height="44" rx="2" fill="#EFF6FF" stroke="#BFDBFE" stroke-width="0.5"/>
+  <text x="630" y="43" font-size="7" class="mono" fill="#1E3A5F">Note: Dec 10 → matures April 10</text>
+  <text x="630" y="52" font-size="7" class="mono" fill="#1E3A5F">Discounted Jan 10 — remaining: <tspan font-weight="bold">3 months</tspan></text>
+  <text x="630" y="61" font-size="7" class="mono" fill="#1E3A5F">MV = $815.50 + $16.31 = $831.81</text>
+  <text x="630" y="71" font-size="6.5" class="it" fill="#3B82F6">Fact organization implicitly internalized</text>
+
+  <!-- arrow -->
+  <polygon points="754,78 756,82 758,78" fill="#94A3B8"/>
+
+  <!-- blk2: "But wait" — single focused doubt -->
+  <rect x="624" y="85" width="264" height="44" rx="2" fill="#FFF7ED" stroke="#FCD34D" stroke-width="0.5"/>
+  <text x="630" y="96" font-size="7" class="mono" fill="#78350F">But wait—the discount should be on the maturity</text>
+  <text x="630" y="105" font-size="7" class="mono" fill="#78350F">value, not the face value. Let me verify.</text>
+  <text x="630" y="114" font-size="7" class="mono" fill="#78350F">Alternative: face-value discount → $801.23  ✗</text>
+  <text x="630" y="123" font-size="6.5" class="it" fill="#92400E">One focused doubt; resolved immediately</text>
+
+  <!-- arrow -->
+  <polygon points="754,130 756,134 758,130" fill="#94A3B8"/>
+
+  <!-- blk3: convergence -->
+  <rect x="624" y="137" width="264" height="46" rx="2" fill="#F0FDF4" stroke="#86EFAC" stroke-width="0.5"/>
+  <text x="630" y="148" font-size="7" class="mono" fill="#14532D">Discount = $831.81 × 0.065 × 0.25 = $13.52</text>
+  <text x="630" y="158" font-size="7" class="mono" fill="#14532D">Fee     = $831.81 × 0.00125       = $1.04</text>
+  <text x="630" y="168" font-size="7" class="mono" fill="#14532D">Net     = $831.81 − $13.52 − $1.04 = <tspan font-weight="bold">$817.25</tspan></text>
+  <text x="630" y="178" font-size="6.5" class="it" fill="#16A34A">Logical convergence — no unnecessary revisit</text>
+
+  <!-- result -->
+  <rect x="624" y="189" width="264" height="16" rx="2" fill="#F0FDF4" stroke="#16A34A" stroke-width="0.7"/>
+  <text x="756" y="200" text-anchor="middle" font-size="7.5" font-weight="bold" fill="#166534">Prediction: "E"  ✓</text>
+
+  <!-- internalization note box -->
+  <rect x="624" y="212" width="264" height="52" rx="2" fill="#FFFBEB" stroke="#FDE68A" stroke-width="0.6"/>
+  <text x="630" y="223" font-size="7" font-weight="bold" fill="#78350F">Internalization observed:</text>
+  <text x="630" y="233" font-size="6.8" fill="#78350F">• Fact-organization phase persists without tags</text>
+  <text x="630" y="243" font-size="6.8" fill="#78350F">• Single directed self-check (vs. infinite loop)</text>
+  <text x="630" y="253" font-size="6.8" fill="#78350F">• Halts immediately after convergence</text>
+  <text x="630" y="262" font-size="6.8" fill="#78350F">• Achieves best accuracy on MMLU-Pro (64.73%)</text>
+
+  <!-- bottom label -->
+  <rect x="624" y="272" width="264" height="14" rx="2" fill="#ECFDF5"/>
+  <text x="756" y="282" text-anchor="middle" font-size="8" font-weight="bold" fill="#065F46">D-CoT  (Internalized)</text>
+  <text x="756" y="296" text-anchor="middle" font-size="6.5" fill="#888">Output: ~720 tokens</text>
+
+
+  <!-- ══════════════════════════════════════════════
+       Caption
+       ══════════════════════════════════════════════ -->
+  <text x="450" y="344" text-anchor="middle" font-size="7.5" fill="#333">
+    Figure 1: Reasoning trace comparison on MMLU-Pro #238 (Qwen3-8B). (a) Base model falls into an infinite verification loop and fails.
+  </text>
+  <text x="450" y="355" text-anchor="middle" font-size="7.5" fill="#333">
+    (b) D-CoT with explicit control tags reaches the correct answer efficiently. (c) D-CoT without tags shows the same disciplined structure — internalized.
+  </text>
+
+</svg>
+</body>
+</html>
