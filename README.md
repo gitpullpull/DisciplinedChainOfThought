@@ -1,7 +1,7 @@
 # D-CoT: Disciplined Chain-of-Thought Learning for Efficient Reasoning in Small Language Models
 
 [![arXiv](https://img.shields.io/badge/arXiv-2602.21786-b31b1b.svg)](https://arxiv.org/abs/2602.21786)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![License: arXiv](https://img.shields.io/badge/License-arXiv-green.svg)](https://arxiv.org/abs/2602.21786)
 
 Chain-of-Thought (CoT) distillation from Large Language Models (LLMs) often induces "overthinking" in Small Language Models (SLMs), leading to performance degradation and excessive token consumption. **D-CoT** enforces a structured reasoning process using control tags — such as `<TEMP_LOW>` for fact-checking and `<TEMP_HIGH>` for multi-perspective exploration — as auxiliary scaffolding during training. By optimizing the CoT trajectory, D-CoT suppresses reasoning drift and simultaneously achieves token reduction and performance improvement.
 
@@ -68,7 +68,7 @@ python GPQA-diamond-bench.py -m unsloth/Qwen3-8B -lp <lora_path> -up -ui
 
 ## Japanese Version
 
-The Japanese version of this paper was submitted to **JSAI 2025** (The 39th Annual Conference of the Japanese Society for Artificial Intelligence). It will be publicly available on J-STAGE around May 2025. For early access, please refer to `人工知能学会全国大会_原稿_生方俊輔.pdf` included in this repository.
+The Japanese version of this paper was submitted to **JSAI 2026** (The 40th Annual Conference of the Japanese Society for Artificial Intelligence). It will be publicly available on J-STAGE around May 2026.
 
 ## Links
 
@@ -85,10 +85,10 @@ The Japanese version of this paper was submitted to **JSAI 2025** (The 39th Annu
 ## Citation
 
 ```bibtex
-@article{ubukata2025dcot,
+@article{ubukata2026dcot,
   title={D-CoT: Disciplined Chain-of-Thought Learning for Efficient Reasoning in Small Language Models},
   author={Ubukata, Shunsuke},
   journal={arXiv preprint arXiv:2602.21786},
-  year={2025}
+  year={2026}
 }
 ```
